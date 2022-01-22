@@ -1,7 +1,9 @@
 import { User as UserDBModel } from '@prisma/client';
+import { Post } from '../../posts/entities/post.entity';
 
 export class User implements UserDBModel {
-  id: number;
+  readonly id: number;
   email: string;
   name: string | null;
+  posts: Post[];
 }

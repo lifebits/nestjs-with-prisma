@@ -26,6 +26,12 @@ export class PostsService {
     });
   }
 
+  findAllByUserId(userId: number): Promise<Post[]> {
+    return this.prisma.post.findMany({
+      where: { authorId: userId }
+    });
+  }
+
   update(id: number, updatePostDto: UpdatePostDto): Promise<Post> {
     return this.prisma.post.update({
       where: { id: id },

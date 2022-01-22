@@ -5,5 +5,6 @@ export class Post implements PostDBModel {
   title: string;
   content: string | null
   published: boolean
-  authorId: number | null
+  // TODO add @Exclude
+  authorId: number
 }
