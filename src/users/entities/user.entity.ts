@@ -5,5 +5,7 @@ export class User implements UserDBModel {
   readonly id: number;
   email: string;
   name: string | null;
-  posts: Post[];
+  birthday;
+  createdAt;
+  // posts: Post[];
 }

@@ -1,27 +1,13 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, MinLength } from 'class-validator';
+import { OmitType } from '@nestjs/swagger';
+import { UserDto } from './user.dto';
 
-export class CreateUserRequestDto {
-  @ApiProperty()
-  email: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(3, { message: 'Name field require minimum length 3' })
-  name: string | null;
-
-  @ApiPropertyOptional()
-  comment?: string;
-
+export class CreateUserRequestDto extends OmitType(UserDto, ['id', 'posts']) {
   constructor(data: CreateUserRequestDto) {
-    Object.assign(this, data);
+    super(data);
   }
 }
 
-export class CreateUserResponseDto extends CreateUserRequestDto {
-  @ApiProperty()
-  id: number;
-
+export class CreateUserResponseDto extends UserDto {
   constructor(data: CreateUserResponseDto) {
     super(data);
   }

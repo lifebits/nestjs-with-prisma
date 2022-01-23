@@ -1,39 +1,41 @@
 import { PrismaService } from '@core/db-connector';
 import { Injectable } from '@nestjs/common';
 
-import { PostsService } from '../posts/posts.service';
-
 import { User } from './entities/user.entity';
+import { UserDto } from './dto/user.dto';
 import { CreateUserRequestDto, CreateUserResponseDto } from './dto/create-user.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService/*, private posts: PostsService*/) {}
+  constructor(private prisma: PrismaService) {}
 
   create(createUserDto: CreateUserRequestDto): Promise<CreateUserResponseDto> {
     return this.prisma.user.create({
       data: createUserDto
     })
-      .then((model: User) => {
-        return new CreateUserResponseDto(model);
+      .then((model: User) => new CreateUserResponseDto(model))
+      .catch(e => {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          console.log(e);
+          if (e.code === 'P2002') {
+            console.log('There is a unique constraint violation');
+          }
+        }
+        throw e;
       });
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  findAll(): Promise<UserDto[]> {
+    return this.prisma.user.findMany()
+      .then(array => array.map(a => new UserDto(a)));
   }
 
-  findOne(id: number): Promise<CreateUserResponseDto> {
-    let result: CreateUserResponseDto;
+  findOne(id: number): Promise<UserDto> {
     return this.prisma.user.findUnique({
       where: { id: id }
     })
-      .then((model: User) => {
-        return new CreateUserResponseDto(model);
-      })
-      // .then((model: CreateUserDtoResponse) => {
-      //
-      // });
+      .then((model: User) => new UserDto(model))
   }
 
   finsOneWithPosts(userId: number) {

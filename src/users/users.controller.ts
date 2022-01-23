@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 
+import { UserDto } from './dto/user.dto';
 import { CreateUserRequestDto, CreateUserResponseDto } from './dto/create-user.dto';
 import { UpdateUserRequestDto } from './dto/update-user.dto';
 
@@ -20,15 +21,21 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
+  @ApiResponse({
+    status: 200,
+    description: 'Test description',
+    type: UserDto,
+    isArray: true
+  })
+  findAll(): Promise<UserDto[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: CreateUserResponseDto})
-  findOne(@Param('id') id: string): Promise<any> {
-    // return this.usersService.findOne(+id);
-    return this.usersService.finsOneWithPosts(+id)
+  @ApiOkResponse({ type: UserDto})
+  findOne(@Param('id') id: string): Promise<UserDto> {
+    return this.usersService.findOne(+id);
+    // return this.usersService.finsOneWithPosts(+id)
   }
 
   @Patch(':id')
