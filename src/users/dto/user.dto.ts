@@ -23,7 +23,7 @@ export class UserDto {
   @ApiProperty()
   createdAt: Date;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: PostDto, isArray: true })
   posts?: Array<PostDto>;
 
   constructor(data: UserDto) {
