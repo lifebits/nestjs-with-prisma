@@ -14,16 +14,7 @@ export class UsersService {
     return this.prisma.user.create({
       data: createUserDto
     })
-      .then((model: User) => new CreateUserResponseDto(model))
-      .catch(e => {
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
-          console.log(e);
-          if (e.code === 'P2002') {
-            console.log('There is a unique constraint violation');
-          }
-        }
-        throw e;
-      });
+      .then((model: User) => new CreateUserResponseDto(model));
   }
 
   findAll(): Promise<UserDto[]> {

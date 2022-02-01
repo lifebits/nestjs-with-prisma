@@ -16,6 +16,7 @@ export class UsersController {
     description: 'The record has been successfully created.',
     type: CreateUserResponseDto,
   })
+  @ApiResponse({ status: 400, description: 'There is a unique constraint violation' })
   create(@Body() createUserDto: CreateUserRequestDto): Promise<CreateUserResponseDto> {
     return this.usersService.create(createUserDto);
   }
