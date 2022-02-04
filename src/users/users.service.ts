@@ -29,13 +29,14 @@ export class UsersService {
       .then((model: User) => new UserDto(model))
   }
 
-  finsOneWithPosts(userId: number) {
+  findOneWithPosts(userId: number): Promise<UserDto[]> {
     return this.prisma.user.findMany({
       where: { id: userId },
       include: {
         posts: true,
       },
-    });
+    })
+      .then((data) => data.map(model => new UserDto(model)));
   }
 
   update(id: number, updateUserDto) {

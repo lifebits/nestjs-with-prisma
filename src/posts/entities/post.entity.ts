@@ -8,3 +8,10 @@ export class Post implements PostDBModel {
   createdAt: Date | null;
   authorId: number;
 }
+
+export class OutsidePost {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}

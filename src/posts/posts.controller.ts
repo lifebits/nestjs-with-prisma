@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpService } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { PostsService } from './posts.service';
@@ -21,6 +21,11 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
+  @Delete()
+  removeAll() {
+    return this.postsService.removeAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(+id);
@@ -33,6 +38,11 @@ export class PostsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+    return 'Need Implement method';
+  }
+
+  @Post('parse')
+  parsePosts() {
+    return this.postsService.generatePosts();
   }
 }

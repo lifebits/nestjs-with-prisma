@@ -26,7 +26,8 @@ export class UserDto {
   @ApiPropertyOptional({ type: PostDto, isArray: true })
   posts?: Array<PostDto>;
 
-  constructor(data: UserDto) {
+  constructor(data: UserDto, posts?: PostDto[]) {
     Object.assign(this, data);
+    // this.posts = posts;
   }
 }
