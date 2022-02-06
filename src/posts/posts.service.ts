@@ -1,11 +1,13 @@
 import { PrismaService } from '@core/db-connector';
+import { TEST_POST_IDS, TEST_POST_MAX_LENGTH } from '@core//constants';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { concatAll, forkJoin, map, Observable, switchMap, tap, toArray } from 'rxjs';
+import { concatAll, forkJoin, map, Observable, of, reduce, switchMap, tap, toArray } from 'rxjs';
 
-import { CreatePostDto } from './dto/create-post.dto';
+import { CreatePostDto, CreateTestedPostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { OutsidePost, Post } from './entities/post.entity';
+import { catchError } from 'rxjs/operators';
 import { PostDto } from './dto/post.dto';
 
 function randomInteger(min: number, max: number): number {
@@ -24,11 +26,11 @@ export class PostsService {
     });
   }
 
-  findAll(): Promise<Post[]> {
+  findAll(): Promise<PostDto[]> {
     return this.prisma.post.findMany();
   }
 
-  findOne(id: number): Promise<Post> {
+  findOne(id: number): Promise<PostDto> {
     return this.prisma.post.findUnique({
       where: { id: id }
     });
@@ -71,17 +73,24 @@ export class PostsService {
           });
         }),
         concatAll(),
-        map(post => new CreatePostDto({
-          authorId: post.userId,
-          content: post.body,
-          title: post.title,
-          published: false
-        })),
-        toArray(),
-        switchMap(postList => {
+        reduce((acc, post, i) => {
+          acc.push(new CreateTestedPostDto({
+            id: TEST_POST_IDS[i],
+            authorId: post.userId,
+            content: post.body,
+            title: post.title,
+            published: false
+          }))
+          return acc;
+        }, []),
+        map(post => post.slice(0, TEST_POST_MAX_LENGTH)),
+        switchMap(postDtoList => {
           return this.prisma.post.createMany({
-            data: postList
+            data: postDtoList,
           })
+        }),
+        catchError(() => {
+          return of({ message: 'Test posts already exist' });
         })
       );
   }

@@ -16,6 +16,7 @@ export class PostDto {
   @ApiProperty()
   createdAt: Date | null;
 
+  @ApiProperty()
   authorId: number;
 
   constructor(data: PostDto) {
