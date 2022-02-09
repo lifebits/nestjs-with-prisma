@@ -79,7 +79,7 @@ export class PostsService {
             authorId: post.userId,
             content: post.body,
             title: post.title,
-            published: false
+            published: !!randomInteger(0, 1),
           }))
           return acc;
         }, []),
